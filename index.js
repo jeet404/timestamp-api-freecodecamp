@@ -22,7 +22,11 @@ app.get("/api/:date?", (req, res) => {
   const dateString = req.params.date;
   const dateStringRegex = /^[0-9]+$/;
   const numbersOnly = dateStringRegex.test(dateString);
-
+  if (!dateString) {
+    const currentDate = new Date().toUTCString();
+    const currentUnix = Date.parse(currentDate);
+    res.json({ unix: currentUnix, utc: currentDate });
+  }
   if (!numbersOnly) {
     const unixTimestamp = Date.parse(dateString);
     const utcDate = new Date(unixTimestamp).toUTCString();
@@ -37,12 +41,6 @@ app.get("/api/:date?", (req, res) => {
 
     res.json({ unix: unixTimestamp, utc: utcDate });
   }
-
-  app.get("/api", (req, res) => {
-    const currentDate = new Date().toUTCString();
-    const currentUnix = Date.parse(currentDate);
-    res.json({ unix: currentUnix, utc: currentDate });
-  });
 });
 
 // listen for requests :)
